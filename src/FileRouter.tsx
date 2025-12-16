@@ -12,8 +12,13 @@ export function FileRouter({ routes }: FileRouterProps) {
         let path = filePath
           .replace(/.*\/pages\//, '/')  // Remove everything up to and including /pages/
           .replace(/\.[jt]sx?$/, '')  // Remove .js, .jsx, .ts, .tsx extension
-          .replace(/\/index$/, '') || '/'  // Handle index as '' -> '/', or /foo/index -> /foo
-            .replace(/\[(.*?)\]/g, ':$1');  // Convert [param] to :param
+          .replace(/\/index$/, '');  // Remove /index
+
+        if (path === '') {
+          path = '/';
+        }
+
+        path = path.replace(/\[(.*?)\]/g, ':$1');  // Convert [param] to :param
 
         const Component = React.lazy(async () => {
           const module = await importFn();

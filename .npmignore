@@ -14,3 +14,6 @@ src
 .idea
 .vscode
 tsconfig.json
+jest.config.js
+src/*.test.tsx
+src/setupTests.ts
