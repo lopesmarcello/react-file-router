@@ -1,0 +1,16 @@
+# build artifacts
+dist
+
+# dependencies
+node_modules
+
+# source files
+src
+
+# misc
+.DS_Store
+.npmrc
+*.log
+.idea
+.vscode
+tsconfig.json

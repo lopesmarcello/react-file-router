@@ -1,0 +1,31 @@
+{
+  "name": "react-file-router",
+  "version": "1.0.1",
+  "description": "Lightweight file-based router for Vite + react-router-dom, inspired by Next.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0",
+    "react-router-dom": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.27",
+    "typescript": "^5.9.3"
+  },
+  "keywords": [
+    "react",
+    "router",
+    "file-based",
+    "vite"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
