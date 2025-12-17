@@ -1,29 +1,29 @@
-# react-file-router
+# fs-router-dom
 
 Lightweight file-based router for Vite + React Router DOM, like Next.js.
 
 ## Installation
 ```
-npm install react-file-router
+npm install fs-router-dom
 ```
 
 ## Usage
 
-### `<FileRouter />`
+### `<FSRouter />`
 
-The `FileRouter` component dynamically creates `react-router-dom` routes from a list of file-based modules. It requires being a child of a `BrowserRouter` (or another `react-router` router).
+The `FSRouter` component dynamically creates `react-router-dom` routes from a list of file-based modules. It requires being a child of a `BrowserRouter` (or another `react-router` router).
 
 ```jsx
 // App.tsx
 import { BrowserRouter } from 'react-router-dom';
-import { FileRouter } from 'react-file-router';
+import { FSRouter } from 'fs-router-dom';
 
 const routes = import.meta.glob('./pages/**/*.tsx');
 
 function App() {
   return (
     <BrowserRouter basename="/app">
-      <FileRouter routes={routes} />
+      <FSRouter routes={routes} />
     </BrowserRouter>
   );
 }
@@ -31,22 +31,22 @@ function App() {
 export default App;
 ```
 
-### `<FullFileRouter />`
+### `<FullFSRouter />`
 
-The `FullFileRouter` component is a "batteries-included" component for users who want to quickly set up file-based routing without configuring `react-router-dom`'s `BrowserRouter` separately. It instantiates a `BrowserRouter` and places the `FileRouter` inside it, handling the setup in one step.
+The `FullFSRouter` component is a "batteries-included" component for users who want to quickly set up file-based routing without configuring `react-router-dom`'s `BrowserRouter` separately. It instantiates a `BrowserRouter` and places the `FSRouter` inside it, handling the setup in one step.
 
-`FullFileRouter` accepts two types of props:
-- `routes`: The same `routes` object required by `FileRouter`.
+`FullFSRouter` accepts two types of props:
+- `routes`: The same `routes` object required by `FSRouter`.
 - All props accepted by `react-router-dom`'s `BrowserRouter` (e.g., `basename`, `window`).
 
 ```jsx
 // App.tsx
-import { FullFileRouter } from 'react-file-router';
+import { FullFSRouter } from 'fs-router-dom';
 
 const routes = import.meta.glob('./pages/**/*.tsx');
 
 function App() {
-  return <FullFileRouter routes={routes} basename="/app" />;
+  return <FullFSRouter routes={routes} basename="/app" />;
 }
 
 export default App;

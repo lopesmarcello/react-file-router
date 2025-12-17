@@ -1,1 +1,1 @@
-export { FileRouter, FullFileRouter } from './FileRouter';
+export { FSRouter, FullFSRouter } from './FSRouter';

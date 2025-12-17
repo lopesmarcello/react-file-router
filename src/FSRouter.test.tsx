@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { FileRouter } from './FileRouter';
+import { FSRouter } from './FSRouter';
 
 // Mock components
 const Home = () => <div>Home</div>;
@@ -14,11 +14,11 @@ const routes = {
   './pages/users/[id].tsx': () => Promise.resolve({ default: User }),
 };
 
-describe('FileRouter', () => {
+describe('FSRouter', () => {
   it('should render the correct component for a static route', async () => {
     render(
       <MemoryRouter initialEntries={['/about']}>
-        <FileRouter routes={routes} />
+        <FSRouter routes={routes} />
       </MemoryRouter>
     );
     expect(await screen.findByText('About')).toBeInTheDocument();
@@ -27,7 +27,7 @@ describe('FileRouter', () => {
   it('should render the correct component for the root route', async () => {
     render(
       <MemoryRouter initialEntries={['/']}>
-        <FileRouter routes={routes} />
+        <FSRouter routes={routes} />
       </MemoryRouter>
     );
     expect(await screen.findByText('Home')).toBeInTheDocument();
@@ -36,7 +36,7 @@ describe('FileRouter', () => {
   it('should render the correct component for a dynamic route', async () => {
     render(
       <MemoryRouter initialEntries={['/users/123']}>
-        <FileRouter routes={routes} />
+        <FSRouter routes={routes} />
       </MemoryRouter>
     );
     expect(await screen.findByText('User')).toBeInTheDocument();

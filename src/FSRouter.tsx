@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, BrowserRouter, BrowserRouterProps } from 'react-router-dom';
 
-interface FileRouterProps {
+interface FSRouterProps {
   routes: Record<string, () => Promise<unknown>>;
 }
 
@@ -34,7 +34,7 @@ function transformFilePathToRoutePath(filePath: string): string {
   return path;
 }
 
-export function FileRouter({ routes }: FileRouterProps) {
+export function FSRouter({ routes }: FSRouterProps) {
   return (
     <Routes>
       {Object.entries(routes).map(([filePath, importFn]) => {
@@ -62,12 +62,12 @@ export function FileRouter({ routes }: FileRouterProps) {
   );
 }
 
-interface FullFileRouterProps extends FileRouterProps, Omit<BrowserRouterProps, 'children'> { }
+interface FullFSRouterProps extends FSRouterProps, Omit<BrowserRouterProps, 'children'> { }
 
-export function FullFileRouter({ routes, ...browserProps }: FullFileRouterProps) {
+export function FullFSRouter({ routes, ...browserProps }: FullFSRouterProps) {
   return (
     <BrowserRouter {...browserProps}>
-      <FileRouter routes={routes} />
+      <FSRouter routes={routes} />
     </BrowserRouter>
   );
 }
