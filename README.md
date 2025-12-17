@@ -3,7 +3,9 @@
 Lightweight file-based router for Vite + React Router DOM, like Next.js.
 
 ## Installation
+```
 npm install react-file-router
+```
 
 ## Usage
 
