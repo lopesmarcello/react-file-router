@@ -10,9 +10,15 @@ import { buildRouteTree, RouteNode } from "./utils/build-route-tree";
 
 interface FSRouterProps {
   routes: Record<string, () => Promise<{ default: ComponentType }>>;
+  notFoundComponent?: React.ReactNode;
+  suspenseFallback?: React.ReactNode;
 }
 
-export function FSRouter({ routes }: FSRouterProps) {
+export function FSRouter({
+  routes,
+  notFoundComponent = <div>404 - Not Found</div>,
+  suspenseFallback = <div>Loading...</div>,
+}: FSRouterProps) {
   const routeTree = buildRouteTree(routes);
 
   function renderNode(node: RouteNode): JSX.Element {
@@ -21,13 +27,13 @@ export function FSRouter({ routes }: FSRouterProps) {
     let element;
     if (node.isLayout && Component) {
       element = (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={suspenseFallback}>
           {React.createElement(Component, null, <Outlet />)}
         </Suspense>
       );
     } else if (Component) {
       element = (
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={suspenseFallback}>
           <Component />
         </Suspense>
       );
@@ -53,14 +59,14 @@ export function FSRouter({ routes }: FSRouterProps) {
         <Route
           path="/"
           element={
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={suspenseFallback}>
               {React.createElement(rootComponent)}
             </Suspense>
           }
         />
       )}
       {routeTree.children.map((child) => renderNode(child))}
-      <Route path="*" element={<div>404 - Not Found</div>} />
+      <Route path="*" element={notFoundComponent} />
     </Routes>
   );
 }
@@ -68,10 +74,19 @@ export function FSRouter({ routes }: FSRouterProps) {
 interface FullFSRouterProps
   extends FSRouterProps, Omit<BrowserRouterProps, "children"> {}
 
-export function FullFSRouter({ routes, ...browserProps }: FullFSRouterProps) {
+export function FullFSRouter({
+  routes,
+  notFoundComponent,
+  suspenseFallback,
+  ...browserProps
+}: FullFSRouterProps) {
   return (
     <BrowserRouter {...browserProps}>
-      <FSRouter routes={routes} />
+      <FSRouter
+        routes={routes}
+        notFoundComponent={notFoundComponent}
+        suspenseFallback={suspenseFallback}
+      />
     </BrowserRouter>
   );
 }

@@ -2,6 +2,12 @@
 
 Lightweight file-based router for Vite + React Router DOM, like Next.js.
 
+## What's New in 0.0.3
+
+- **Nested Routes**: Routes are now automatically nested, providing better support for `react-router-dom` features and improving route management.
+- **Nested Layout Support**: Create complex and reusable UI structures with nested layouts that apply to specific sections of your application.
+- **Custom 404 and Suspense Fallback**: You can now provide your own custom components for 404 (Not Found) pages and suspense fallbacks, allowing for a more consistent and branded user experience.
+
 ## Installation
 ```
 npm install fs-router-dom
