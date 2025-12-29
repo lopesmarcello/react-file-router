@@ -26,28 +26,22 @@ export function buildRouteTree(
       let cleanSeg = seg.replace(/\[(.*?)\]/g, ":$1"); // Handle [param] -> :param
 
       // Find or create child node for this segment
-      let childIndex = currentNode.children.findIndex(
-        (c) => c.segment === cleanSeg,
-      );
-      if (childIndex === -1) {
-        currentNode.children.push({
+      let child = currentNode.children.find((c) => c.segment === cleanSeg);
+      if (!child) {
+        child = {
           segment: cleanSeg,
           isRoot: false,
           children: [],
-        });
-        childIndex = currentNode.children.length - 1;
+        };
+        currentNode.children.push(child);
       }
-      let child = currentNode.children[childIndex];
 
       // If last segment, assign component
       if (index === segments.length - 1) {
         if (seg === "_layout") {
           child.isLayout = true;
-          child.component = importFn;
-          // Don't add as a separate route path
-        } else {
-          child.component = importFn;
         }
+        child.component = importFn;
       }
 
       currentNode = child;

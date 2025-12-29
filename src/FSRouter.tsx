@@ -18,18 +18,24 @@ export function FSRouter({ routes }: FSRouterProps) {
   function renderNode(node: RouteNode): JSX.Element {
     const Component = node.component ? React.lazy(node.component) : null;
 
-    const element =
-      node.isLayout && Component ? (
+    let element;
+    if (node.isLayout && Component) {
+      element = (
         <Suspense fallback={<div>Loading...</div>}>
           {React.createElement(Component, null, <Outlet />)}
         </Suspense>
-      ) : Component ? (
+      );
+    } else if (Component) {
+      element = (
         <Suspense fallback={<div>Loading...</div>}>
           <Component />
         </Suspense>
-      ) : node.children.length > 0 ? (
-        <Outlet />
-      ) : null; // Fallback for groups
+      );
+    } else if (node.children.length > 0) {
+      element = <Outlet />;
+    } else {
+      element = null; // Fallback for groups
+    }
 
     return (
       <Route path={node.segment} element={element}>
