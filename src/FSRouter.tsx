@@ -16,9 +16,7 @@ export function FSRouter({ routes }: FSRouterProps) {
   const routeTree = buildRouteTree(routes);
 
   function renderNode(node: RouteNode): JSX.Element {
-    const Component = node.component
-      ? React.lazy(node.component)
-      : null;
+    const Component = node.component ? React.lazy(node.component) : null;
 
     const element =
       node.isLayout && Component ? (
@@ -32,15 +30,6 @@ export function FSRouter({ routes }: FSRouterProps) {
       ) : node.children.length > 0 ? (
         <Outlet />
       ) : null; // Fallback for groups
-
-    if (node.segment === "") {
-      // Root node
-      return (
-        <Route path="/" element={element}>
-          {node.children.map((child) => renderNode(child))}
-        </Route>
-      );
-    }
 
     return (
       <Route path={node.segment} element={element}>

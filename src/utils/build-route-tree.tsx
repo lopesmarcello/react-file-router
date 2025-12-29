@@ -2,13 +2,14 @@ export interface RouteNode {
   segment: string;
   component?: () => Promise<{ default: React.ComponentType }>;
   isLayout?: boolean;
+  isRoot: boolean;
   children: RouteNode[];
 }
 
 export function buildRouteTree(
   routes: Record<string, () => Promise<{ default: React.ComponentType }>>,
 ): RouteNode {
-  const root: RouteNode = { segment: "", children: [] };
+  const root: RouteNode = { segment: "", children: [], isRoot: true };
 
   Object.entries(routes).forEach(([fileRoute, importFn]) => {
     let path = fileRoute.replace(/.*?\/pages\//, "").replace(/\.[jt]sx?$/, ""); // Strip prefix and extension
@@ -18,15 +19,22 @@ export function buildRouteTree(
     let currentNode = root;
     segments.forEach((seg: string, index: number) => {
       if (seg === "index" && segments.length === 1) {
+        currentNode.segment = "";
         currentNode.component = importFn;
         return;
       }
       let cleanSeg = seg.replace(/\[(.*?)\]/g, ":$1"); // Handle [param] -> :param
 
       // Find or create child node for this segment
-      let childIndex = currentNode.children.findIndex((c) => c.segment === cleanSeg);
+      let childIndex = currentNode.children.findIndex(
+        (c) => c.segment === cleanSeg,
+      );
       if (childIndex === -1) {
-        currentNode.children.push({ segment: cleanSeg, children: [] });
+        currentNode.children.push({
+          segment: cleanSeg,
+          isRoot: false,
+          children: [],
+        });
         childIndex = currentNode.children.length - 1;
       }
       let child = currentNode.children[childIndex];
