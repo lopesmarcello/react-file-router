@@ -41,4 +41,44 @@ describe('FSRouter', () => {
     );
     expect(await screen.findByText('User')).toBeInTheDocument();
   });
+
+  it('should render the default 404 component if route does not exist', async () => {
+    render(
+      <MemoryRouter initialEntries={['/this-route-does-not-exist']}>
+        <FSRouter routes={routes} />
+      </MemoryRouter>
+    );
+    expect(await screen.findByText('404 - Not Found')).toBeInTheDocument();
+  });
+  it('should render a custom 404 component if provided', async () => {
+    const CustomNotFound = () => <div>Custom Not Found</div>;
+    render(
+      <MemoryRouter initialEntries={['/this-route-does-not-exist']}>
+        <FSRouter routes={routes} notFoundComponent={<CustomNotFound />} />
+      </MemoryRouter>
+    );
+    expect(await screen.findByText('Custom Not Found')).toBeInTheDocument();
+  });
+  it('should render a custom suspense fallback if provided', async () => {
+    const CustomSuspenseFallback = () => <div>Custom Loading...</div>;
+    const routesWithDelay: Record<
+      string,
+      () => Promise<{ default: React.ComponentType }>
+    > = {
+      './pages/index.tsx': () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ default: Home }), 100)
+        ),
+    };
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <FSRouter
+          routes={routesWithDelay}
+          suspenseFallback={<CustomSuspenseFallback />}
+        />
+      </MemoryRouter>
+    );
+    expect(await screen.findByText('Custom Loading...')).toBeInTheDocument();
+    expect(await screen.findByText('Home')).toBeInTheDocument();
+  });
 });
