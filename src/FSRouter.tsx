@@ -14,7 +14,7 @@ interface FSRouterProps {
   suspenseFallback?: React.ReactNode;
 }
 
-type ComponentTypePromise = () => Promise<{ default: React.ComponentType<any> }>
+type ComponentTypePromise = () => Promise<{ default: React.ComponentType<any> }>;
 
 export function FSRouter({
   routes,
@@ -24,59 +24,86 @@ export function FSRouter({
   const routeTree = buildRouteTree(routes);
 
   function renderNode(node: RouteNode): JSX.Element {
-    const Component = node.component ? React.lazy(node.component as ComponentTypePromise) : null;
+    const LayoutComponent =
+      node.isLayout && node.component
+        ? React.lazy(node.component as ComponentTypePromise)
+        : null;
+    const PageComponent =
+      !node.isLayout && node.component
+        ? React.lazy(node.component as ComponentTypePromise)
+        : null;
+    const IndexComponent = node.indexComponent
+      ? React.lazy(node.indexComponent as ComponentTypePromise)
+      : null;
 
-
-    let element;
-    if (node.isLayout && Component) {
-      element = (
-        <Suspense fallback={suspenseFallback}>
-          {React.createElement(Component, null, <Outlet />)}
-        </Suspense>
-      );
-    } else if (Component) {
-      element = (
-        <Suspense fallback={suspenseFallback}>
-          <Component />
-        </Suspense>
-      );
-    } else if (node.children.length > 0) {
-      element = <Outlet />;
-    } else {
-      element = null; // Fallback for groups
-    }
+    const element = LayoutComponent ? (
+      <Suspense fallback={suspenseFallback}>
+        {React.createElement(LayoutComponent, null, <Outlet />)}
+      </Suspense>
+    ) : PageComponent ? (
+      <Suspense fallback={suspenseFallback}>
+        <PageComponent />
+      </Suspense>
+    ) : (
+      <Outlet />
+    );
 
     return (
       <Route path={node.segment} element={element}>
+        {IndexComponent && (
+          <Route
+            index
+            element={
+              <Suspense fallback={suspenseFallback}>
+                <IndexComponent />
+              </Suspense>
+            }
+          />
+        )}
         {node.children.map((child) => renderNode(child))}
       </Route>
     );
   }
-  const rootComponent = routeTree.component
-    ? React.lazy(routeTree.component as ComponentTypePromise)
+
+  const RootLayout =
+    routeTree.isLayout && routeTree.component
+      ? React.lazy(routeTree.component as ComponentTypePromise)
+      : null;
+  const RootIndex = routeTree.indexComponent
+    ? React.lazy(routeTree.indexComponent as ComponentTypePromise)
     : null;
+
+  const rootElement = RootLayout ? (
+    <Suspense fallback={suspenseFallback}>
+      {React.createElement(RootLayout, null, <Outlet />)}
+    </Suspense>
+  ) : (
+    <Outlet />
+  );
 
   return (
     <Routes>
-      {rootComponent && (
-        <Route
-          path="/"
-          element={
-            <Suspense fallback={suspenseFallback}>
-              {React.createElement(rootComponent)}
-            </Suspense>
-          }
-        />
-      )}
-      {routeTree.children.map((child) => renderNode(child))}
+      <Route path="/" element={rootElement}>
+        {RootIndex && (
+          <Route
+            index
+            element={
+              <Suspense fallback={suspenseFallback}>
+                <RootIndex />
+              </Suspense>
+            }
+          />
+        )}
+        {routeTree.children.map((child) => renderNode(child))}
+      </Route>
       <Route path="*" element={notFoundComponent} />
     </Routes>
   );
 }
 
 interface FullFSRouterProps
-  extends FSRouterProps, Omit<BrowserRouterProps, "children"> {
-}
+  extends FSRouterProps,
+    Omit<BrowserRouterProps, "children"> {}
 
 export function FullFSRouter({
   routes,

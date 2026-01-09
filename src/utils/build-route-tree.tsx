@@ -4,6 +4,7 @@ export interface RouteNode {
   isLayout?: boolean;
   isRoot: boolean;
   children: RouteNode[];
+  indexComponent?: () => Promise<unknown>;
 }
 
 export function buildRouteTree(
@@ -17,15 +18,21 @@ export function buildRouteTree(
     const segments = path.split("/").filter(Boolean); // Split into array, remove empty
 
     let currentNode = root;
-    segments.forEach((seg: string, index: number) => {
-      if (seg === "index" && segments.length === 1) {
-        currentNode.segment = "";
+    for (let i = 0; i < segments.length; i++) {
+      const seg = segments[i];
+
+      if (seg === "index") {
+        currentNode.indexComponent = importFn;
+        return; 
+      }
+      if (seg === "_layout") {
         currentNode.component = importFn;
+        currentNode.isLayout = true;
         return;
       }
+
       let cleanSeg = seg.replace(/\[(.*?)\]/g, ":$1"); // Handle [param] -> :param
 
-      // Find or create child node for this segment
       let child = currentNode.children.find((c) => c.segment === cleanSeg);
       if (!child) {
         child = {
@@ -36,17 +43,12 @@ export function buildRouteTree(
         currentNode.children.push(child);
       }
 
-      if (seg === "_layout") {
-        child.isLayout = true;
-      }
-
-      // If last segment, assign component
-      if (index === segments.length - 1) {
+      if (i === segments.length - 1) {
         child.component = importFn;
       }
 
       currentNode = child;
-    });
+    }
   });
 
   return root;
