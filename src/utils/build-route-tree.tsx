@@ -36,11 +36,12 @@ export function buildRouteTree(
         currentNode.children.push(child);
       }
 
+      if (seg === "_layout") {
+        child.isLayout = true;
+      }
+
       // If last segment, assign component
       if (index === segments.length - 1) {
-        if (seg === "_layout") {
-          child.isLayout = true;
-        }
         child.component = importFn;
       }
 

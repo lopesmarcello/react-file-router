@@ -26,6 +26,7 @@ export function FSRouter({
   function renderNode(node: RouteNode): JSX.Element {
     const Component = node.component ? React.lazy(node.component as ComponentTypePromise) : null;
 
+
     let element;
     if (node.isLayout && Component) {
       element = (

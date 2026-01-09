@@ -2,7 +2,7 @@
 
 Lightweight file-based router for Vite + React Router DOM, like Next.js.
 
-## What's New in 0.0.5
+## What's New in 0.0.7
 
 - **Nested Routes**: Routes are now automatically nested, providing better support for `react-router-dom` features and improving route management.
 - **Nested Layout Support**: Create complex and reusable UI structures with nested layouts that apply to specific sections of your application.
