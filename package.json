@@ -1,6 +1,6 @@
 {
   "name": "fs-router-dom",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Lightweight file-based router for Vite + react-router-dom, inspired by Next.js",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
