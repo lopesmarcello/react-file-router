@@ -1,13 +1,13 @@
 export interface RouteNode {
   segment: string;
-  component?: () => Promise<{ default: React.ComponentType }>;
+  component?: () => Promise<{ default: unknown }>;
   isLayout?: boolean;
   isRoot: boolean;
   children: RouteNode[];
 }
 
 export function buildRouteTree(
-  routes: Record<string, () => Promise<{ default: React.ComponentType }>>,
+  routes: Record<string, () => Promise<{ default: unknown }>>,
 ): RouteNode {
   const root: RouteNode = { segment: "", children: [], isRoot: true };
 

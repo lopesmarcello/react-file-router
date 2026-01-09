@@ -1,4 +1,4 @@
-import React, { Suspense, ComponentType } from "react";
+import React, { ComponentType, Suspense } from "react";
 import {
   Routes,
   Route,
@@ -9,10 +9,12 @@ import {
 import { buildRouteTree, RouteNode } from "./utils/build-route-tree";
 
 interface FSRouterProps {
-  routes: Record<string, () => Promise<{ default: ComponentType }>>;
+  routes: Record<string, () => Promise<{ default: unknown }>>;
   notFoundComponent?: React.ReactNode;
   suspenseFallback?: React.ReactNode;
 }
+
+type ComponentTypePromise = () => Promise<{ default: React.ComponentType<any> }>
 
 export function FSRouter({
   routes,
@@ -22,7 +24,7 @@ export function FSRouter({
   const routeTree = buildRouteTree(routes);
 
   function renderNode(node: RouteNode): JSX.Element {
-    const Component = node.component ? React.lazy(node.component) : null;
+    const Component = node.component ? React.lazy(node.component as ComponentTypePromise) : null;
 
     let element;
     if (node.isLayout && Component) {
@@ -50,7 +52,7 @@ export function FSRouter({
     );
   }
   const rootComponent = routeTree.component
-    ? React.lazy(routeTree.component)
+    ? React.lazy(routeTree.component as ComponentTypePromise)
     : null;
 
   return (
@@ -72,7 +74,8 @@ export function FSRouter({
 }
 
 interface FullFSRouterProps
-  extends FSRouterProps, Omit<BrowserRouterProps, "children"> {}
+  extends FSRouterProps, Omit<BrowserRouterProps, "children"> {
+}
 
 export function FullFSRouter({
   routes,
