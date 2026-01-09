@@ -9,7 +9,7 @@ import {
 import { buildRouteTree, RouteNode } from "./utils/build-route-tree";
 
 interface FSRouterProps {
-  routes: Record<string, () => Promise<{ default: unknown }>>;
+  routes: Record<string, () => Promise<unknown>>;
   notFoundComponent?: React.ReactNode;
   suspenseFallback?: React.ReactNode;
 }
