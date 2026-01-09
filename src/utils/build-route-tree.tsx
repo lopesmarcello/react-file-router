@@ -13,9 +13,9 @@ export function buildRouteTree(
   const root: RouteNode = { segment: "", children: [], isRoot: true };
 
   Object.entries(routes).forEach(([fileRoute, importFn]) => {
-    let path = fileRoute.replace(/.*?\/pages\//, "").replace(/\.[jt]sx?$/, ""); // Strip prefix and extension
+    let path = fileRoute.replace(/.*?\/pages\//, "").replace(/\.[jt]sx?$/, "");
 
-    const segments = path.split("/").filter(Boolean); // Split into array, remove empty
+    const segments = path.split("/").filter(Boolean);
 
     let currentNode = root;
     for (let i = 0; i < segments.length; i++) {
@@ -23,7 +23,7 @@ export function buildRouteTree(
 
       if (seg === "index") {
         currentNode.indexComponent = importFn;
-        return; 
+        return;
       }
       if (seg === "_layout") {
         currentNode.component = importFn;
